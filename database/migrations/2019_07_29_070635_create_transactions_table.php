@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->double('total');
             $table->integer('quantity');
             $table->string('status');
+            $table->string('signature');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

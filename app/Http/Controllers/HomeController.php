@@ -179,6 +179,8 @@ class HomeController extends Controller
             'body' => base64_encode(json_encode($data))
         ]);
 
+        dd($response);
+
         return view('checkout');
     }
 }
