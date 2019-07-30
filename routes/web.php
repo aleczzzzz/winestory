@@ -31,7 +31,8 @@ Route::post('user/profile', 'UserController@updateProfile')->name('users.profile
 Route::get('order', 'HomeController@order')->name('order.landing.index');
 Route::get('order/cart', 'HomeController@cart')->name('order.landing.cart');
 Route::post('order/add-to-cart', 'HomeController@addToCart')->name('order.landing.add-to-cart');
-Route::get('order/remove-from-cart/{id}', 'HomeController@removeFromCart')->name('order.landing.remove-from-cart');
+Route::post('order/remove-from-cart/{id}', 'HomeController@removeFromCart')->name('order.landing.remove-from-cart');
+Route::post('order/edit-cart/{id}', 'HomeController@editCart')->name('order.landing.edit-cart');
 Route::post('order/checkout', 'HomeController@checkout')->name('order.landing.checkout');
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');

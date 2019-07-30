@@ -20,7 +20,13 @@
                         <td>{{$product['quantity']}}</td>
                         <td>{{number_format($product['price'] * $product['quantity'], 2)}}</td>
                         <td>
-                            <a href="{{ route('order.landing.remove-from-cart', $key) }}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Remove</a>
+                            <div class="btn-group">
+                                <form action="{{ route('order.landing.remove-from-cart', $key) }}" method="post" class="remove-form">
+                                    @csrf()
+                                    <a href="#" class="btn btn-primary edit-quantity" data-product-quantity="{{$product['quantity']}}" data-product-id="{{$key}}">Edit Quantity</a>
+                                    <button type="submit" class="btn btn-danger remove">Remove</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
@@ -45,3 +51,61 @@
         </table>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function() {
+            $('.remove').click(function(event){
+                event.preventDefault();
+                var x = false;
+                $.confirm({
+                    title: 'Are you sure?',
+                    content: 'Are you sure you want to remove this from your cart?',
+                    buttons: {
+                        confirm: {
+                                btnClass: 'btn-danger',
+                                action: function () {
+                                    $('.remove-form').submit();
+                                }
+                        },
+                        cancel: function () {
+                            
+                        }
+                    }
+                });
+            });
+            $('.edit-quantity').click(function(){
+                btn = this;
+                $.confirm({
+                    title: 'Edit Quantity',
+                    content: '' +
+                    '<form action="" class="edit-quantity-form">' +
+                    '<div class="form-group">' +
+                    '<label>Quantity</label>' +
+                    '<input type="number" name="quantity" value="' + $(btn).data('product-quantity') + '" class="quantity form-control" min=1 required autofocus />' +
+                    '</div>' +
+                    '</form>',
+                    buttons: {
+                        formSubmit: {
+                            text: 'Submit',
+                            btnClass: 'btn-blue',
+                            action: function() {
+                                var q = this.$content.find('.quantity').val();
+
+                                $.post("{{url('order/edit-cart')}}/" + $(btn).data('product-id'), {
+                                    _token: "{{ csrf_token() }}",
+                                    quantity: q
+                                }).done(function(data) {
+                                    location.reload();
+                                });
+                            }
+                        },
+                        cancel: function () {
+                            //close
+                        },
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

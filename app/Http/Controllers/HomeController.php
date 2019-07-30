@@ -97,6 +97,25 @@ class HomeController extends Controller
         return redirect()->route('order.landing.cart');
     }
 
+    public function editCart($id, Request $request)
+    {
+        $product = Product::findOrFail($id);
+        $price = $product->price;
+
+        $current_quantity = session()->get('cart.products.' . $product->id . '.quantity');
+        $current_subtotal = session()->get('cart.subtotal') - (  $price * $current_quantity );
+        $cart_total = session()->get('cart.total_items') - $current_quantity;
+
+        if (session()->exists('cart.products') && session()->exists('cart.products.' . $product->id)) {
+            $request->session()
+                    ->put('cart.products.' . $product->id . '.quantity', $request->quantity);
+            $request->session()->put('cart.subtotal', $current_subtotal + ($product->price * $request->session()->get('cart.products.' . $product->id . '.quantity')));
+            $request->session()->put('cart.total_items', $cart_total + $request->quantity);
+        }
+
+        return 'success';
+    }
+
     public function checkout()
     {
 
